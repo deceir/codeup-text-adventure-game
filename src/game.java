@@ -1,3 +1,6 @@
+import characters.Enemy;
+import characters.Hero;
+
 import java.util.Scanner;
 
 
@@ -7,33 +10,33 @@ public class game {
 
 
     public static int randomAttack() {
-        return (int)(Math.random() * 15) + 5;
+        return (int) (Math.random() * 15) + 5;
     }
 
     public static int enemyAttack() {
-        return (int)(Math.random() * 15) + 10;
+        return (int) (Math.random() * 15) + 10;
     }
 
     public static int attackChance() {
-        return (int)(Math.random() * 100) + 1;
+        return (int) (Math.random() * 100) + 1;
     }
 
-    public static int battle() {
+    public static int battle(int heroHealth) {
+
 
         Scanner sc = new Scanner(System.in);
 
+
         int enemyHP;
-        int heroHP;
+        int heroHP = heroHealth;
         int potionsAvailable;
 
         System.out.println("Your HP is set to full.");
-        heroHP = 100;
         System.out.println("HP: " + heroHP);
         enemyHP = 100;
         System.out.println("Enemy HP: " + enemyHP);
 
         potionsAvailable = 5;
-
 
 
         int attackRoll;
@@ -84,7 +87,7 @@ public class game {
 
             if (enemyHP <= 0) {
                 System.out.println("You have defeated your enemy.");
-                return 1;
+                return heroHP;
             }
 
             System.out.println("Your enemy prepares to attack.");
@@ -110,10 +113,11 @@ public class game {
             if (heroHP <= 0) {
                 System.out.println("You have been defeated");
                 return 0;
-            };
+            }
+            ;
             if (enemyHP <= 0) {
                 System.out.println("You have defeated your enemy.");
-                return 1;
+                return heroHP;
             }
         } while (heroHP > 0 || enemyHP > 0);
         if (enemyHP > 0) {
@@ -122,7 +126,7 @@ public class game {
             return 0;
         } else {
             System.out.println("You have defeated your enemy.");
-            return 1;
+            return heroHP;
         }
     }
 
@@ -149,18 +153,20 @@ public class game {
         System.out.println("Please enter our hero's name!");
 
         String heroName = sc.nextLine();
+        Hero player = new Hero(heroName, 100, 50, 10);
 
-        System.out.println("Welcome to the story of how our hero, " + heroName + ", faced off against the mighty dragon, Vhermatron.");
 
-        System.out.println("As " + heroName + " enters the dark cavern, a goblin attacks!");
+        System.out.println("Welcome to the story of how our hero, " + player.name + ", faced off against the mighty dragon, Vhermatron.");
+
+        System.out.println("As " + player.name + " enters the dark cavern, a goblin attacks!");
 
         int battleResult;
 
-        battleResult = battle();
+        player.setHp(battleResult = battle(player.hp));
+        System.out.println("Player health is: " + player.hp);
 
-        if (battleResult == 1) {
-            System.out.println("After defeating the goblin, you continue through the cavern.");
-        }
+        System.out.println("After defeating the goblin, you continue through the cavern.");
+
         System.out.println("What action will you take?");
         System.out.println("-Continue");
         System.out.println("-Search");
@@ -175,8 +181,18 @@ public class game {
             searchChance = attackChance();
             if (searchChance > 40) {
                 System.out.println("You find something!");
-                userTreasure += 1;
+                System.out.println("You find a skill gem, permanently increasing your critical hit chance by 5!");
             }
+        }
+        System.out.println("You continue through the cavern, and discover two doors.");
+        System.out.println("Which door do you choose to go through?");
+        System.out.println("Left or right?");
+        userResponse = sc.nextLine();
+
+        if (userResponse.equalsIgnoreCase("left")) {
+            System.out.println("You go through the left door and find another goblin!");
+            System.out.println("The goblin attacks!");
+            player.hp = battle(player.getHp());
         }
 
     }
